@@ -58,7 +58,7 @@
                                     <navigationItem title="My Map" id="yrv-HT-Gy0">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="ko4-Fv-sgF">
                                             <connections>
-                                                <segue destination="QWR-je-tja" kind="unwind" unwindAction="unwindToHomeVCWithSender:" id="Qfo-CF-iSO"/>
+                                                <segue destination="QWR-je-tja" kind="unwind" unwindAction="unwindToHomeVCWithSender:" id="LG5-yc-fTa"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="Let's Go" id="2Io-6f-lew">

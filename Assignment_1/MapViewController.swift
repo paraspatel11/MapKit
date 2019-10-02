@@ -22,8 +22,14 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     @IBOutlet var myMapView : MKMapView!
     @IBOutlet var tbLocEntered : UITextField!
     
-   
+    @IBOutlet var tbLocEntered2 : UITextField!
+    @IBOutlet var tbLocEntered3 : UITextField!
     
+    /*
+    var locEnteredText  = tbLocEntered.text!
+    var locEnteredText2  = tbLocEntered2.text!
+    var locEnteredText3  = tbLocEntered3.text!
+    */
     
     //variable for tableview - it is required when using MapKit
     @IBOutlet var myTableView : UITableView!
@@ -50,6 +56,7 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       
         
         centerMapOnLocation(location: initialLocation)
         let dropPin = MKPointAnnotation()
@@ -65,9 +72,13 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     //to search for new location and drop pin on it
     @IBAction func findNewLocation(sender : Any)
     {
+     
         let locEnteredText  = tbLocEntered.text!
+       // let locEntered2Text  = tbLocEntered2.text!
+        //let locEntered3Text  = tbLocEntered3.text!
         
         let geoCoder = CLGeocoder()
+       
         
         geoCoder.geocodeAddressString(locEnteredText) { (placemarks, error) in
             
@@ -112,15 +123,39 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                         }
                         
                         self.myTableView.reloadData()
-                    }
+                    }//End of IF
                     
                 })
                 
-            }
-        }
+            } // If First Place Mark
+            
+        }// End of Geo Coder Function
+    }// End of IBOutlet
+    
+    //------------------------   Circle Radius Start-------------------------------
+    
+    
+    
+    
+     //------------------------   Circle Radius Stop -------------------------------
+    
+    //------------------------   Ploygon Method Start-------------------------------
+   /*
+    func addAnnotations() {
+        myMapView?.delegate = self
+        myMapView?.addAnnotations(places)
         
-        
+        let overlays = places.map { MKCircle(center: $0.coordinate, radius: 100) }
+        myMapView?.addOverlays(overlays)
+     
+        var locations = places.map { $0.coordinate }
+        let polyline = MKPolyline(coordinates: &locations, count: locations.count)
+        myMapView?.add(polyline)
     }
+    */
+    //------------------------   Ploygon Method Stop-------------------------------
+    
+    
     
     //method to draw route lines
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
