@@ -82,13 +82,17 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     //to search for new location and drop pin on it
     @IBAction func findNewLocation(sender : Any)
     {
+        //self.myMapView.removeAnnotation(self.dropPin)
      
         let locEnteredText  = tbLocEntered.text!
-       // let locEntered2Text  = tbLocEntered2.text!
-        //let locEntered3Text  = tbLocEntered3.text!
+        let locEntered2Text  = tbLocEntered2.text!
+     //   let locEntered3Text  = tbLocEntered3.text!
         
+        // From Sheridan to Destination
         let geoCoder = CLGeocoder()
-       
+        
+        // From Sheridan to Waypoint 1
+       let geoCoder2 = CLGeocoder()
         
         geoCoder.geocodeAddressString(locEnteredText) { (placemarks, error) in
             
@@ -143,6 +147,59 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
             } // If First Place Mark
             
         }// End of Geo Coder Function
+        
+        geoCoder2.geocodeAddressString(locEntered2Text) { (placemarks, error) in
+            if let placemark = placemarks?.first{
+                let coordinates : CLLocationCoordinate2D = placemark.location!.coordinate
+                
+                let newLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
+                self.centerMapOnLocation(location: newLocation)
+                
+                // Resets all existing overlay - Blue Line Erases
+                self.myMapView.removeOverlays(self.myMapView.overlays)
+                
+                // Reset Pin Drop - Red Pin Erases
+                self.myMapView.removeAnnotation(self.dropPin)
+                
+                self.dropPin.coordinate = coordinates
+                self.dropPin.title = placemark.name
+                self.myMapView.addAnnotation(self.dropPin)
+                self.myMapView.selectAnnotation(self.dropPin, animated: true)
+                
+                //for directions
+                let request = MKDirections.Request()
+                request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.initialLocation.coordinate))
+                
+                request.destination = MKMapItem(placemark: MKPlacemark(coordinate: coordinates))
+                
+                request.requestsAlternateRoutes = false
+                request.transportType = .automobile
+                
+                
+                let directions = MKDirections(request: request)
+                directions.calculate(completionHandler: { (response, error) in
+                    
+                    for route in response!.routes{
+                        self.myMapView.addOverlay(route.polyline, level: MKOverlayLevel.aboveRoads)
+                        
+                        self.myMapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                        self.routeSteps.removeAllObjects()
+                        
+                        for step in route.steps{
+                            self.routeSteps.add(step.instructions)
+                        }
+                        
+                        // Draws Rectangle
+                        self.drawRect()
+                        
+                        self.myTableView.reloadData()
+                    }//End of IF
+                    
+                })
+                
+            } // If First Place Mark
+        }
+        
     }// End of IBOutlet
     
     //------------------------   Rect Radius Start-------------------------------
