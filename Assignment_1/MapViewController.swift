@@ -19,13 +19,13 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     let dropPin = MKPointAnnotation()
     // Globalize the Drop Pin to Remove Old Pins
     
-    
+    /*
     let coordinates1 = CLLocation(latitude: 43.855787, longitude: -79.93953)
     let coordinates2 = CLLocation(latitude: 43.455787, longitude: -79.93953)
     let coordinates3 = CLLocation(latitude: 43.455787, longitude: -79.539536)
     let coordinates4 = CLLocation(latitude: 43.855787, longitude: -79.53953)
     let locationCoordinates = [coordinates1,coordinates2,coordinates3,coordinates4,coordinates1]
-    
+    */
     
     
     @IBOutlet var myMapView : MKMapView!
@@ -133,7 +133,7 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                         }
                         
                         // Draws Rectangle
-                        self.drawRect()
+                       self.drawRect()
                         
                         self.myTableView.reloadData()
                     }//End of IF
@@ -148,7 +148,12 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     //------------------------   Rect Radius Start-------------------------------
     
     func drawRect() {
-
+        let coordinates1 = CLLocation(latitude: 43.855787, longitude: -79.93953)
+        let coordinates2 = CLLocation(latitude: 43.455787, longitude: -79.93953)
+        let coordinates3 = CLLocation(latitude: 43.455787, longitude: -79.539536)
+        let coordinates4 = CLLocation(latitude: 43.855787, longitude: -79.53953)
+        let locationCoordinates = [coordinates1,coordinates2,coordinates3,coordinates4,coordinates1]
+        
         let coordinates = locationCoordinates.map { $0.coordinate }
         
         let polyLine = MKPolyline(coordinates: coordinates, count: coordinates.count)
