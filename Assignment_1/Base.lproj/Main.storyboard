@@ -111,6 +111,9 @@
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go"/>
+                                <connections>
+                                    <outlet property="delegate" destination="0uv-Wp-7nL" id="9eN-zX-f2R"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -121,6 +124,7 @@
                         <outlet property="myTableView" destination="ykO-Ue-OSo" id="OL1-vz-COg"/>
                         <outlet property="tbLocEntered" destination="b4P-9e-YYf" id="rcl-DZ-e4C"/>
                         <outlet property="tbLocEntered2" destination="saW-2h-7TW" id="8Kg-OR-olb"/>
+                        <outlet property="tbLocEntered3" destination="zsP-wJ-m6Z" id="FzR-Gk-tA0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="911-XZ-7tQ" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -86,13 +86,16 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
      
         let locEnteredText  = tbLocEntered.text!
         let locEntered2Text  = tbLocEntered2.text!
-     //   let locEntered3Text  = tbLocEntered3.text!
+        let locEntered3Text  = tbLocEntered3.text!
         
         // From Sheridan to Destination
         let geoCoder = CLGeocoder()
         
         // From Sheridan to Waypoint 1
        let geoCoder2 = CLGeocoder()
+        
+        // From Sheridan to Waypoint 2
+        let geoCoder3 = CLGeocoder()
         
         geoCoder.geocodeAddressString(locEnteredText) { (placemarks, error) in
             
@@ -102,11 +105,33 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                 let newLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
                 self.centerMapOnLocation(location: newLocation)
                 
+                let boxlatitude = coordinates.latitude
+                let boxlongitude = coordinates.longitude
+                
+                if(boxlatitude <= 43.855787 && boxlatitude >= 43.455787)
+                {
+                    if(boxlongitude <= -79.93953 && boxlongitude >= -79.53953)
+                    {
+                        let alert = UIAlertController(title: "!! Alert !!", message: "Address is in bounding box area", preferredStyle: .alert)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true)
+                        
+                        print("Worked")
+                    }
+                }
+               /* else{
+                    let alert = UIAlertController(title: "!! Alert !!", message: "Address is NOT in bounding box area", preferredStyle: .alert)
+                    
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+                */
                 // Resets all existing overlay - Blue Line Erases
                 self.myMapView.removeOverlays(self.myMapView.overlays)
                 
                 // Reset Pin Drop - Red Pin Erases
-                self.myMapView.removeAnnotation(self.dropPin)
+              //  self.myMapView.removeAnnotation(self.dropPin)
                 
                 self.dropPin.coordinate = coordinates
                 self.dropPin.title = placemark.name
@@ -137,7 +162,7 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                         }
                         
                         // Draws Rectangle
-                       self.drawRect()
+                      self.drawRect()
                         
                         self.myTableView.reloadData()
                     }//End of IF
@@ -159,7 +184,60 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                 self.myMapView.removeOverlays(self.myMapView.overlays)
                 
                 // Reset Pin Drop - Red Pin Erases
-                self.myMapView.removeAnnotation(self.dropPin)
+              //  self.myMapView.removeAnnotation(self.dropPin)
+                
+                self.dropPin.coordinate = coordinates
+                self.dropPin.title = placemark.name
+                self.myMapView.addAnnotation(self.dropPin)
+                self.myMapView.selectAnnotation(self.dropPin, animated: true)
+                
+                //for directions
+                let request = MKDirections.Request()
+                request.source = MKMapItem(placemark: MKPlacemark(coordinate: self.initialLocation.coordinate))
+                
+                request.destination = MKMapItem(placemark: MKPlacemark(coordinate: coordinates))
+                
+                request.requestsAlternateRoutes = false
+                request.transportType = .automobile
+                
+                
+                let directions = MKDirections(request: request)
+                directions.calculate(completionHandler: { (response, error) in
+                    
+                    for route in response!.routes{
+                        self.myMapView.addOverlay(route.polyline, level: MKOverlayLevel.aboveRoads)
+                        
+                        self.myMapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                        self.routeSteps.removeAllObjects()
+                        
+                        for step in route.steps{
+                            self.routeSteps.add(step.instructions)
+                        }
+                        
+                        // Draws Rectangle
+                        self.drawRect()
+                        
+                        self.myTableView.reloadData()
+                    }//End of IF
+                    
+                })
+                
+            }// If First Place Mark
+        }
+        
+        geoCoder3.geocodeAddressString(locEntered3Text) { (placemarks, error) in
+            
+            if let placemark = placemarks?.first{
+                let coordinates : CLLocationCoordinate2D = placemark.location!.coordinate
+                
+                let newLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
+                self.centerMapOnLocation(location: newLocation)
+                
+                // Resets all existing overlay - Blue Line Erases
+                self.myMapView.removeOverlays(self.myMapView.overlays)
+                
+                // Reset Pin Drop - Red Pin Erases
+                //self.myMapView.removeAnnotation(self.dropPin)
                 
                 self.dropPin.coordinate = coordinates
                 self.dropPin.title = placemark.name
@@ -198,7 +276,7 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
                 })
                 
             } // If First Place Mark
-        }
+            }// end of geocode 3
         
     }// End of IBOutlet
     
@@ -207,7 +285,7 @@ class MapViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegat
     func drawRect() {
         let coordinates1 = CLLocation(latitude: 43.855787, longitude: -79.93953)
         let coordinates2 = CLLocation(latitude: 43.455787, longitude: -79.93953)
-        let coordinates3 = CLLocation(latitude: 43.455787, longitude: -79.539536)
+        let coordinates3 = CLLocation(latitude: 43.455787, longitude: -79.53953)
         let coordinates4 = CLLocation(latitude: 43.855787, longitude: -79.53953)
         let locationCoordinates = [coordinates1,coordinates2,coordinates3,coordinates4,coordinates1]
         
